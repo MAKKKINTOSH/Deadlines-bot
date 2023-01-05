@@ -2,7 +2,7 @@ from config import users, admins
 from create_bot import bot
 """Модуль, содержащий вспомогательные функции"""
 
-def is_user(id):
+async def is_user(id):
     """Функция проверяет, зарегестрирован ли пользователь"""
     for k in users:
         if k['id'] == id:
@@ -10,7 +10,7 @@ def is_user(id):
     await bot.send_message(id, "Вы не выбрали группу\n\nВыбрать группу можно по команде /reg")
     return False
 
-def is_admin(id, group):
+async def is_admin(id, group):
     """Функция проверяет, является ли пользователь админом данной группы"""
     for k in range(len(admins)):
         if id == admins[k]['id']:
@@ -18,14 +18,14 @@ def is_admin(id, group):
                 return True
             return False
 
-def take_variable(id, variable):
+async def take_variable(id, variable):
     """Функция берет данные из словаря пользователей по id пользователя"""
     for k in users:
         if k['id'] == id:
             return k[variable]
 
 
-def change_variable(id, variable, value):
+async def change_variable(id, variable, value):
     """Функция изменяет данные из словаря пользователей по id пользователя"""
     for k in users:
         if k['id'] == id:

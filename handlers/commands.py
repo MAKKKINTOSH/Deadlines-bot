@@ -1,9 +1,9 @@
 from create_bot import dp
 from config import groups_array, callback_for_groups
-from aiogram import types, Dispatcher
-from keyboards import *
+from aiogram import types
+from keyboards import make_registration_keyboard, make_menu_keyboard
 from functions import is_user
-from asyncio import create_task
+from config import users, admins
 
 """В модуле происходит обработка команд, введенных пользователем бота"""
 
@@ -14,6 +14,8 @@ async def command_start(message : types.Message):
     await message.answer("Привет, я - прототип дедлайн бота\n\n"
                          "Чтобы узнать команды, используйте /help\n\n"
                          "Но для начала выберите группу")
+
+    print(users, admins)
 
     await message.answer("Выберите группу", reply_markup=make_registration_keyboard())
 

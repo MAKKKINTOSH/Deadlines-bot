@@ -11,7 +11,6 @@ def make_menu_keyboard(id):
     b1 = KeyboardButton("Ближайшие 5 дедлайнов")
     b2 = KeyboardButton("Календарь")
     keyboard.add(b1, b2)
-    if
 
 
 def make_cancel_keyboard(message):
@@ -41,3 +40,5 @@ def make_registration_keyboard():
 
     return keyboard
 
+def make_calendar_keyboard(group, month=current_month, year=current_year):
+    """Клавиатура календарь"""

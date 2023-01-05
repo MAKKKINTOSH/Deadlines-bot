@@ -5,7 +5,7 @@ from aiogram.utils import executor
 
 from handlers import commands
 from handlers import text
-from handlers import callbacks
+from handlers import commands
 
 if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)

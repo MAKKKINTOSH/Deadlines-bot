@@ -1,4 +1,5 @@
 from datetime import datetime
+from create_bot import DB
 
 """В модуле содержатся переменные для работы бота, токен содержится в файле TOKEN.py"""
 
@@ -24,5 +25,5 @@ callback_for_groups = ["asub-22-1", "evmb-22-2"]
 
 main_admin = 545762112
 
-admins = ""
-users = ""
+admins = DB.take_dictionary('admins', current_month, current_year)
+users = DB.take_dictionary('users', current_month, current_year)
