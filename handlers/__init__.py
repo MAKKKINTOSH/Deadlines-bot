@@ -1,3 +1,4 @@
 from handlers import commands
 from handlers import text
-from handlers import callbacks
+from handlers import common_callbacks
+from handlers import registration

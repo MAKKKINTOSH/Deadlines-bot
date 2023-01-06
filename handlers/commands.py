@@ -1,5 +1,5 @@
 from create_bot import dp
-from config import groups_array, callback_for_groups
+from config import groups_array
 from aiogram import types
 from keyboards import make_registration_keyboard, make_menu_keyboard
 from functions import is_user
@@ -17,27 +17,34 @@ async def command_start(message : types.Message):
 
     print(users, admins)
 
-    await message.answer("Выберите группу", reply_markup=make_registration_keyboard())
-
-@dp.message_handler(commands=['reg'])
-async def command_registration(message : types.Message):
-    """Команда для выбора группы студента"""
-
-    await message.answer("Выберите группу", reply_markup=make_registration_keyboard())
+    await message.answer("Выберите группу", reply_markup=await make_registration_keyboard())
 
 @dp.message_handler(commands=['menu'])
 async def command_menu(message : types.Message):
     """Команда для вызова главного меню бота"""
+
     if is_user(message.from_user.id):
-        await message.answer("Выберите действие", reply_markup=make_menu_keyboard(message.from_user.id))
+        await message.answer("Выберите действие", reply_markup=await make_menu_keyboard(message.from_user.id))
 
 @dp.message_handler(commands=['contacts'])
 async def command_contacts(message : types.Message):
     """Команда для отправки пользователю контактов создателей бота (Я и Саша)"""
 
+    await message.answer("<b><u>Создатели:</u></b>\n\n"
+                         "<b><i>Иван</i></b> (Лид) - @Van_Vanskiy\n"
+                         "👆по всем вопросам👆\n"
+                         "<b><i>Александр</i></b> (Младший научный сотрудник) - @chipul1a", parse_mode="html")
+
+
 @dp.message_handler(commands=['help'])
 async def command_help(message : types.Message):
     """Команда для помощи пользователю"""
+
+    await message.answer("Привет, я - прототип дедлайн бота\n\n"
+                         "1./reg - выбор вашей группы)\n"
+                         "2./menu - главное меню\n"
+                         "3./help - помощь\n"
+                         "4./contacts - контакты")
 
 #def register_handlers_commands(dp : Dispatcher):
 #    dp.register_message_handler(command_menu, commands=['menu'])

@@ -34,26 +34,35 @@ callback_for_days = ['d01', 'd02', 'd03', 'd04', 'd05', 'd06', 'd07', 'd08', 'd0
 #    await call.answer(call.data, show_alert=True)
 #    await bot.delete_message(call.from_user.id, call.message.message_id)
 
+kb = types.InlineKeyboardMarkup(row_width=10)
+for k in range(50):
+    kb.insert(types.InlineKeyboardButton(str(k), callback_data=str(k)))
 
 @dp.message_handler()
 async def start(message: types.Message):
-    if call.data in ["1", "2", "3"]
-    await message.answer("start", reply_markup=types.InlineKeyboardMarkup().add(types.InlineKeyboardButton('1', callback_data='1'),
-                                                                                types.InlineKeyboardButton('2', callback_data='2'),
-                                                                                types.InlineKeyboardButton('3', callback_data='3')))
+    await message.answer("start", reply_markup=kb)
+
+
+#@dp.message_handler()
+#async def start(message: types.Message):
+#    await message.answer("start", reply_markup=types.InlineKeyboardMarkup().add(types.InlineKeyboardButton('1', callback_data='1'),
+#                                                                                types.InlineKeyboardButton('2', callback_data='2'),
+#                                                                                types.InlineKeyboardButton('3', callback_data='3')))
+@dp.callback_query_handler(text=["1","2","3"])
 async def call(call: types.CallbackQuery):
-    await bot.edit_message_reply_markup(call.from_user.id, call.message.message_id, reply_markup=types.InlineKeyboardMarkup().add(types.InlineKeyboardButton('4', callback_data='4'),
+    await call.message.edit_reply_markup(types.InlineKeyboardMarkup().add(types.InlineKeyboardButton('4', callback_data='4'),
                                                                                 types.InlineKeyboardButton('5', callback_data='5'),
                                                                                 types.InlineKeyboardButton('6', callback_data='6')))
 @dp.callback_query_handler(text=["4", "5", "6"])
 async def call(call: types.CallbackQuery):
-    await bot.edit_message_reply_markup(call.from_user.id, call.message.message_id, reply_markup=types.InlineKeyboardMarkup().add(types.InlineKeyboardButton('7', callback_data='7'),
+    await call.message.edit_reply_markup(types.InlineKeyboardMarkup().add(types.InlineKeyboardButton('7', callback_data='7'),
                                                                                 types.InlineKeyboardButton('8', callback_data='8'),
                                                                                 types.InlineKeyboardButton('9', callback_data='9')))
+
 @dp.callback_query_handler(text=["7", "8", "9"])
 async def call(call: types.CallbackQuery):
     await call.answer(call.data, show_alert=True)
-    await bot.delete_message(call.from_user.id, call.message.message_id)
+    await call.message.delete()
 
 if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
