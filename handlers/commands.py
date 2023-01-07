@@ -1,7 +1,7 @@
 from create_bot import dp
-from config import groups_array
+from institutes_and_groups import groups_array
 from aiogram import types
-from keyboards import make_registration_keyboard, make_menu_keyboard
+from keyboards import make_menu_keyboard
 from functions import is_user
 from config import users, admins
 
@@ -12,18 +12,18 @@ async def command_start(message : types.Message):
     """Команда для начала использования бота"""
 
     await message.answer("Привет, я - прототип дедлайн бота\n\n"
-                         "Чтобы узнать команды, используйте /help\n\n"
-                         "Но для начала выберите группу")
+                         "Чтобы узнать команды, используйте /help\n\n")
 
     print(users, admins)
 
-    await message.answer("Выберите группу", reply_markup=await make_registration_keyboard())
+    await message.answer("Для того, чтобы пользоваться ботом, выберите группу по команде /reg",
+                         reply_markup=types.ReplyKeyboardMarkup(resize_keyboard=True).add(types.KeyboardButton("/reg")))
 
 @dp.message_handler(commands=['menu'])
 async def command_menu(message : types.Message):
     """Команда для вызова главного меню бота"""
 
-    if is_user(message.from_user.id):
+    if await is_user(message.from_user.id):
         await message.answer("Выберите действие", reply_markup=await make_menu_keyboard(message.from_user.id))
 
 @dp.message_handler(commands=['contacts'])

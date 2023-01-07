@@ -22,6 +22,15 @@ class DataBase:
 
         self.cursor = self.connect.cursor()
 
+    async def make_deadline(self, group, day, month, year, text):
+        """Создает дедлайн"""
+
+        self.cursor.execute(f"INSERT INTO '{group}'"
+                            f"('date', 'deadline')"
+                            f"VALUES (?, ?)",
+                            (f"{year}-{month}-{day}", text))
+        return self.connect.commit()
+
     async def show_deadline(self, group, day, month, year):
         """Показывает дедлайны на введенную дату"""
 
@@ -34,14 +43,39 @@ class DataBase:
     async def record_exist(self, group, day, month, year):
         """True если на эту дату есть дедлайн, иначе False"""
 
+        self.cursor.execute(f"SELECT date "
+                            f"FROM '{group}' "
+                            f"WHERE date = ?",
+                            (f"{year}-{month}-{day}",))
+        for k in self.cursor:
+            return True
+        return False
+
     async def make_user(self, id, group):
         """Добавляет пользователя в базу данных или изменяет его группу"""
+
+        self.cursor.execute(f"DELETE FROM 'users' WHERE id = ?", (id, ))
+        self.cursor.execute("INSERT INTO users"
+                            "('id', 'user_group')"
+                            "VALUES (?, ?)",
+                            (id, group))
+        return self.connect.commit()
+
+
 
     async def make_admin(self, id, group):
         """Добавляет админа в базу данных или меняет его группу"""
 
+        self.cursor.execute(f"DELETE FROM 'admins' WHERE id = ?", (id,))
+        self.cursor.execute("INSERT INTO admins"
+                            "('id', 'user_group')"
+                            "VALUES (?, ?)",
+                            (id, group))
+        return self.connect.commit()
+
     def take_dictionary(self, table_name, month, year):
         """Возвращает массив словарей для таблиц users и admins"""
+
         self.cursor.execute(f"SELECT * FROM {table_name}")
         dictionary_array = []
         if table_name == 'users':

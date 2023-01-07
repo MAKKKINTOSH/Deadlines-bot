@@ -1,6 +1,7 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
 from config import *
+from institutes_and_groups import groups_array
 from functions import is_admin, take_variable
 
 """Модуль для генерации клавиатур"""
@@ -12,7 +13,7 @@ async def make_menu_keyboard(id):
     b1 = KeyboardButton("Ближайшие 5 дедлайнов")
     b2 = KeyboardButton("Календарь")
     keyboard.add(b1, b2)
-    if is_admin(id, take_variable(id, "group")):
+    if await is_admin(id, await take_variable(id, "group")):
         b3 = KeyboardButton("Добавить")
         b4 = KeyboardButton("Удалить")
         keyboard.add(b3, b4)
@@ -26,31 +27,6 @@ async def make_cancel_keyboard():
 
     keyboard = InlineKeyboardMarkup()
     keyboard.add(InlineKeyboardButton("<<", callback_data="cancel"))
-    return keyboard
-
-async def make_registration_keyboard():
-    """Клавиатура регистрации"""
-
-    keyboard = InlineKeyboardMarkup(resize_keyboard=True)
-    b1 = InlineKeyboardButton
-    b2 = InlineKeyboardButton
-    b3 = InlineKeyboardButton
-    for k in range(0, len(groups_array), 3):
-        try:
-            b1 = InlineKeyboardButton(text=groups_array[k],
-                                      callback_data=groups_array[k])
-            b2 = InlineKeyboardButton(text=groups_array[k+1],
-                                      callback_data=groups_array[k+1])
-            b3 = InlineKeyboardButton(text=groups_array[k+2],
-                                      callback_data=groups_array[k+2])
-        except:
-            if len(groups_array) % 3 == 2:
-                b3 = InlineKeyboardButton(text=" ", callback_data=" ")
-            elif len(groups_array)%3 == 1:
-                b2 = InlineKeyboardButton(text=" ", callback_data=" ")
-                b3 = InlineKeyboardButton(text=" ", callback_data=" ")
-        finally: keyboard.add(b1, b2, b3)
-
     return keyboard
 
 async def make_calendar_keyboard(group, month=current_month, year=current_year):
