@@ -1,6 +1,6 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
-from config import *
+from config import current_month, current_year, main_admin
 from institutes_and_groups import groups_array
 from functions import is_admin, take_variable
 

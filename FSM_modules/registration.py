@@ -43,6 +43,8 @@ async def command_registration(message: Message):
 
 @dp.callback_query_handler(text = institutes, state=FSM_registration.institute)
 async def chosen_institute(call: CallbackQuery, state: FSMContext):
+    """Выбор курса"""
+
     async with state.proxy() as storage:
         storage['institute'] = call.data
     await FSM_registration.next()
@@ -51,6 +53,8 @@ async def chosen_institute(call: CallbackQuery, state: FSMContext):
 
 @dp.callback_query_handler(text = courses, state=FSM_registration.course)
 async def chosen_course(call: CallbackQuery, state: FSMContext):
+    """Выбор группы"""
+
     async with state.proxy() as storage:
         storage['course'] = call.data
     await FSM_registration.next()
@@ -59,12 +63,22 @@ async def chosen_course(call: CallbackQuery, state: FSMContext):
 
 @dp.callback_query_handler(text = groups_array, state=FSM_registration.group)
 async def chosen_group(call: CallbackQuery, state: FSMContext):
+    """Внесение пользователя в базу данных"""
+
     async with state.proxy() as storage:
         await call.answer(f"{storage['institute']} {storage['course']} {call.data}", show_alert=True)
         await call.message.edit_text("Вы успешно выбрали группу")
     await state.finish()
 
 @dp.callback_query_handler(text="cancel_reg", state='*')
-async def cancel(call: CallbackQuery, state: FSMContext):
+async def cancel_registration(call: CallbackQuery, state: FSMContext):
+    """Отмена регистрации"""
+
     await state.finish()
     await call.message.edit_text("Регистрация отменена")
+
+@dp.message_handler(commands = ['reg'], state="*")
+async def already_registration(message: Message):
+    """Защита от одновременной регистрации"""
+
+    await message.answer("Похоже, вы уже начали регистрацию")
