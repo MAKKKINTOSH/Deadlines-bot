@@ -15,20 +15,4 @@ async def next_five(message: Message):
         await delete_previous_calendar(message.from_user.id, message.message_id)
         await message.answer(DB.show_next_n_deadline(await take_variable(message.from_user.id, 'group'), 5))
 
-@dp.message_handler(regexp='Календарь')
-async def calendar(message: Message):
-    """Выводит календарь для просмотра дедлайнов"""
-
-    user_id = message.from_user.id
-    if is_user(user_id):
-        await delete_previous_calendar(message.from_user.id, message.message_id)
-
-        await change_variable(user_id, "edit_type", 0)
-        await change_variable(user_id, "year", current_year)
-        await change_variable(user_id, "month", current_month)
-
-        await message.answer(f"Выберите дату, на которую хотите посмотреть дедлайн\n\n"
-                         f"Группа: {take_variable(user_id, 'group')}\n"
-                         f"Год: {current_year}\nМесяц: {ru_month_array[current_month - 1]}",
-                         reply_markup=await make_calendar_keyboard(take_variable(user_id, 'group')))
 

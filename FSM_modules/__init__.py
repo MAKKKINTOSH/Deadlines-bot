@@ -1,3 +1,3 @@
 from FSM_modules import registration
 from FSM_modules import make_admin
-from FSM_modules import edit_calendar
+from FSM_modules import calendar
