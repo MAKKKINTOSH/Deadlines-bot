@@ -32,39 +32,3 @@ async def calendar(message: Message):
                          f"Год: {current_year}\nМесяц: {ru_month_array[current_month - 1]}",
                          reply_markup=await make_calendar_keyboard(take_variable(user_id, 'group')))
 
-@dp.message_handler(regexp='Добавить')
-async def add(message: Message):
-    """Добавляет дедлайн через календарь"""
-
-    user_id = message.from_user.id
-    if is_user(user_id):
-        if is_admin(user_id, await take_variable(user_id, 'group')):
-            await delete_previous_calendar(message.from_user.id, message.message_id)
-
-            await change_variable(user_id, 'edit_type', 1)
-            await change_variable(user_id, "year", current_year)
-            await change_variable(user_id, "month", current_month)
-
-            await message.answer(f"Выберите дату, на которую хотите добавить дедлайн дедлайн\n\n"
-                                 f"Группа: {take_variable(user_id, 'group')}\n"
-                                 f"Год: {current_year}\nМесяц: {ru_month_array[current_month - 1]}",
-                                 reply_markup=await make_calendar_keyboard(take_variable(user_id, 'group')))
-
-@dp.message_handler(regexp='Удалить')
-async def delete(message: Message):
-    """Удаляет дедлайн через календарь"""
-
-    user_id = message.from_user.id
-    if is_user(user_id):
-        if is_admin(user_id, await take_variable(user_id, 'group')):
-            await delete_previous_calendar(message.from_user.id, message.message_id)
-
-            await change_variable(user_id, 'edit_type', 2)
-            await change_variable(user_id, "year", current_year)
-            await change_variable(user_id, "month", current_month)
-
-            await message.answer(f"Выберите дату, на которую хотите добавить дедлайн дедлайн\n\n"
-                                 f"Группа: {take_variable(user_id, 'group')}\n"
-                                 f"Год: {current_year}\nМесяц: {ru_month_array[current_month - 1]}",
-                                 reply_markup=await make_calendar_keyboard(take_variable(user_id, 'group')))
-
