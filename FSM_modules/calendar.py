@@ -153,21 +153,21 @@ async def select_date_for_delete(call: CallbackQuery, state: FSMContext):
         await call.answer()
 
     @dp.message_handler(content_types="text", state=FSM_delete.delete_deadline)
-    def delete_deadline(message: Message, state: FSMContext):
+    async def delete_deadline(message: Message, state: FSMContext):
         """Удаляет дедлайн по введенному номеру"""
 
         async with state.proxy() as storage:
             try:
-                DB.delete_deadline(await take_variable(message.from_user.id, 'group'),
+                await DB.delete_deadline(await take_variable(message.from_user.id, 'group'),
                                    storage['day'],
                                    storage['month'],
                                    storage['year'],
                                    int(message.text))
 
-                message.answer("✅Отлично, дедлайн успешно удален✅")
+                await message.answer("✅Отлично, дедлайн успешно удален✅")
 
             except:
-                message.answer("🚫Ошибка, вы неправильно ввели номер🚫")
+                await message.answer("🚫Ошибка, вы неправильно ввели номер🚫")
 
 
 @dp.callback_query_handler(text=['previous_year', 'next_year', 'previous_month', 'next_month'], state="*")

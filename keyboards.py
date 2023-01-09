@@ -1,8 +1,9 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
-from config import current_month, current_year, main_admin, days_array, callback_for_days
+from config import current_month, current_year, days_array, callback_for_days
 from institutes_and_groups import groups_array
 from functions import is_admin, take_variable
+from users import main_admin
 
 """Модуль для генерации клавиатур"""
 
