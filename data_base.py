@@ -27,8 +27,7 @@ class DataBase:
 
         self.cursor.execute(f"INSERT INTO '{group}'"
                             f"('date', 'deadline')"
-                            f"VALUES (?, ?)",
-                            (f"{year}-{month}-{day}", text))
+                            f"VALUES ({year}-{month}-{day}, {text})")
         return self.connect.commit()
 
     async def show_deadline(self, group, day, month, year):
@@ -54,11 +53,10 @@ class DataBase:
     async def make_user(self, id, group):
         """Добавляет пользователя в базу данных или изменяет его группу"""
 
-        self.cursor.execute(f"DELETE FROM 'users' WHERE id = ?", (id, ))
+        self.cursor.execute(f"DELETE FROM 'users' WHERE id = {id}")
         self.cursor.execute("INSERT INTO users"
                             "('id', 'user_group')"
-                            "VALUES (?, ?)",
-                            (id, group))
+                            f"VALUES ({id}, {group})")
         return self.connect.commit()
 
 
@@ -66,14 +64,13 @@ class DataBase:
     async def make_admin(self, id, group):
         """Добавляет админа в базу данных или меняет его группу"""
 
-        self.cursor.execute(f"DELETE FROM 'admins' WHERE id = ?", (id,))
+        self.cursor.execute(f"DELETE FROM 'admins' WHERE id = {id}")
         self.cursor.execute("INSERT INTO admins"
                             "('id', 'user_group')"
-                            "VALUES (?, ?)",
-                            (id, group))
+                            f"VALUES ({id}, {group})")
         return self.connect.commit()
 
-    def take_dictionary(self, table_name, month, year):
+    def take_dictionary(self, table_name):
         """Возвращает массив словарей для таблиц users и admins"""
 
         self.cursor.execute(f"SELECT * FROM {table_name}")
@@ -81,10 +78,7 @@ class DataBase:
         if table_name == 'users':
             for k in self.cursor:
                 dictionary_array += [{'id': k[0],
-                                      'group': k[1],
-                                      'month': month,
-                                      'year': year,
-                                      'edit_type': 3}]
+                                      'group': k[1]}]
         if table_name == 'admins':
             for k in self.cursor:
                 dictionary_array += [{'id': k[0],

@@ -1,6 +1,6 @@
 from create_bot import dp
 from aiogram.types import Message
-from functions import is_user, is_admin, delete_previous_calendar, take_variable, change_variable
+from functions import is_user, is_admin, take_variable, change_variable
 from create_bot import DB
 from config import current_year, current_month, ru_month_array
 from keyboards import make_calendar_keyboard
@@ -12,7 +12,6 @@ async def next_five(message: Message):
     """Показывает ближайшие 5 дедлайнов"""
 
     if is_user(message.from_user.id):
-        await delete_previous_calendar(message.from_user.id, message.message_id)
         await message.answer(DB.show_next_n_deadline(await take_variable(message.from_user.id, 'group'), 5))
 
 

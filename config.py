@@ -1,7 +1,7 @@
 from datetime import datetime
 from create_bot import DB
 
-"""В модуле содержатся переменные для работы бота, токен содержится в файле TOKEN.py"""
+"""В модуле содержатся переменные связанные с датой"""
 
 current_year = datetime.now().year
 current_month = datetime.now().month
@@ -19,9 +19,3 @@ month_array = ['01', '02', '03', '04', '05', '06',
 ru_month_array = ['Январь', 'Февраль', 'Март', 'Апрель',
                   'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь',
                   'Октябрь', 'Ноябрь', 'Декабрь']
-
-
-main_admin = 545762112
-
-admins = DB.take_dictionary('admins', current_month, current_year)
-users = DB.take_dictionary('users', current_month, current_year)

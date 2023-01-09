@@ -6,6 +6,10 @@ from functions import is_admin, take_variable
 
 """Модуль для генерации клавиатур"""
 
+cancel_button = InlineKeyboardButton("<<", callback_data="cancel")
+cancel_keyboard = InlineKeyboardMarkup().add(cancel_button)
+#Кнопка и клавиатура отмены
+
 async def make_menu_keyboard(id):
     """Клавиатура главного меню"""
 
@@ -22,12 +26,6 @@ async def make_menu_keyboard(id):
 
     return keyboard
 
-async def make_cancel_keyboard():
-    """Клавиатура для отмены действия и возврата в главное меню"""
-
-    keyboard = InlineKeyboardMarkup()
-    keyboard.add(InlineKeyboardButton("<<", callback_data="cancel"))
-    return keyboard
 
 async def make_calendar_keyboard(group, month=current_month, year=current_year):
     """Клавиатура календарь"""

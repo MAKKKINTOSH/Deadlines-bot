@@ -140,10 +140,12 @@ async def select_date_for_delete(call: CallbackQuery, state: FSMContext):
             set_month = storage['month']
         except:
             set_month = current_month
+            storage['month'] = current_month
         try:
             set_year = storage['year']
         except:
             set_year = current_year
+            storage['year'] = set_year
 
         await call.message.edit_text(f"{await DB.show_deadline(set_group, set_day, set_month, set_year)}\n\n"
                                      f"Введите номер дедлайна, который хотите удалить")
@@ -153,6 +155,20 @@ async def select_date_for_delete(call: CallbackQuery, state: FSMContext):
     @dp.message_handler(content_types="text", state=FSM_delete.delete_deadline)
     def delete_deadline(message: Message, state: FSMContext):
         """Удаляет дедлайн по введенному номеру"""
+
+        async with state.proxy() as storage:
+            try:
+                DB.delete_deadline(await take_variable(message.from_user.id, 'group'),
+                                   storage['day'],
+                                   storage['month'],
+                                   storage['year'],
+                                   int(message.text))
+
+                message.answer("✅Отлично, дедлайн успешно удален✅")
+
+            except:
+                message.answer("🚫Ошибка, вы неправильно ввели номер🚫")
+
 
 @dp.callback_query_handler(text=['previous_year', 'next_year', 'previous_month', 'next_month'], state="*")
 async def change_data(call: CallbackQuery, state: FSMContext):

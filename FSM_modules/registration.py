@@ -4,6 +4,7 @@ from institutes_and_groups import registration_dictionary, institutes, courses, 
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import  State, StatesGroup
 from datetime import datetime
+from keyboards import cancel_button
 
 """Модуль для регистрации пользователя"""
 
@@ -16,21 +17,21 @@ async def make_registration_keyboard_institutes():
     kb = InlineKeyboardMarkup()
     for k in registration_dictionary:
         kb.add(InlineKeyboardButton(k, callback_data=k))
-    kb.add(InlineKeyboardButton("<<", callback_data="cancel_reg"))
+    kb.add(cancel_button)
     return kb
 
 async def make_registration_keyboard_courses(institute):
     kb = InlineKeyboardMarkup()
     for k in registration_dictionary[institute]:
         kb.add(InlineKeyboardButton(k, callback_data=k))
-    kb.add(InlineKeyboardButton("<<", callback_data="cancel_reg"))
+    kb.add(cancel_button )
     return kb
 
 async def make_registration_keyboard_groups(institute, course):
     kb = InlineKeyboardMarkup()
     for k in registration_dictionary[institute][course]:
         kb.add(InlineKeyboardButton(k, callback_data=k))
-    kb.add(InlineKeyboardButton("<<", callback_data="cancel_reg"))
+    kb.add(cancel_button)
     return kb
 
 @dp.message_handler(commands = ['reg'], state=None)
@@ -70,15 +71,4 @@ async def chosen_group(call: CallbackQuery, state: FSMContext):
         await call.message.edit_text("Вы успешно выбрали группу")
     await state.finish()
 
-@dp.callback_query_handler(text="cancel_reg", state=FSM_registration)
-async def cancel_registration(call: CallbackQuery, state: FSMContext):
-    """Отмена регистрации"""
 
-    await state.finish()
-    await call.message.edit_text("Регистрация отменена")
-
-@dp.message_handler(commands = ['reg'], state=FSM_registration)
-async def already_registration(message: Message):
-    """Защита от одновременной регистрации"""
-
-    await message.answer("Похоже, вы уже начали регистрацию")

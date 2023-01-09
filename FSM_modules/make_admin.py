@@ -2,7 +2,7 @@ from create_bot import dp, DB
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from config import main_admin, admins
+from users import main_admin
 from institutes_and_groups import groups_array
 
 """Модуль для внесения админа через чат с ботом"""

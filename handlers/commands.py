@@ -3,7 +3,7 @@ from institutes_and_groups import groups_array
 from aiogram import types
 from keyboards import make_menu_keyboard
 from functions import is_user
-from config import users, admins
+from users import users, admins
 
 """В модуле происходит обработка команд, введенных пользователем бота"""
 
@@ -45,10 +45,3 @@ async def command_help(message : types.Message):
                          "2./menu - главное меню\n"
                          "3./help - помощь\n"
                          "4./contacts - контакты")
-
-#def register_handlers_commands(dp : Dispatcher):
-#    dp.register_message_handler(command_menu, commands=['menu'])
-#    dp.register_message_handler(command_registration, commands=['reg'])
-#    dp.register_message_handler(command_help, commands=['help'])
-#    dp.register_message_handler(command_start, commands=['start'])
-#    dp.register_message_handler(command_contacts, commands=['contacts'])

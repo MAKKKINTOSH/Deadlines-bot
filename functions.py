@@ -1,4 +1,4 @@
-from config import users, admins
+from users import users, admins
 from create_bot import bot
 """Модуль, содержащий вспомогательные функции"""
 
@@ -31,7 +31,3 @@ async def change_variable(id, variable, value):
         if k['id'] == id:
             k[variable] = value
 
-async def delete_previous_calendar(chat_id,message_id):
-    """Функция удаляет предыдущий календарь для корректной работы бота"""
-    if take_variable(chat_id, 'edit_type') != 3:
-        await bot.delete_message(chat_id, message_id)
