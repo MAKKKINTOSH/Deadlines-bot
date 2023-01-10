@@ -1,6 +1,6 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
-from config import current_month, current_year, days_array, callback_for_days
+from date_variables import current_month, current_year, days_array, callback_for_days
 from institutes_and_groups import groups_array
 from functions import is_admin, take_variable
 from users import main_admin
@@ -77,7 +77,7 @@ async def make_calendar_keyboard(group, month=current_month, year=current_year):
     if quantity_of_days % 6 == 4: keyboard.add(DBR[0], DBR[1], DBR[2], DBR[3])
     if quantity_of_days % 6 == 5: keyboard.add(DBR[0], DBR[1], DBR[2], DBR[3], DBR[4])
 
-    keyboard.add(InlineKeyboardButton("<<", callback_data="cancel"))
+    keyboard.add(cancel_button)
 
     return keyboard
 

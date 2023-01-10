@@ -45,3 +45,4 @@ async def command_help(message : types.Message):
                          "2./menu - главное меню\n"
                          "3./help - помощь\n"
                          "4./contacts - контакты")
+    print(admins)

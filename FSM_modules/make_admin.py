@@ -2,58 +2,88 @@ from create_bot import dp, DB
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from users import main_admin
-from institutes_and_groups import groups_array
+from keyboards import cancel_keyboard
+from users import main_admin, admins
+from institutes_and_groups import institutes, courses, groups_array
+from FSM_modules.registration import \
+    make_registration_keyboard_groups, \
+    make_registration_keyboard_courses, \
+    make_registration_keyboard_institutes
 
 """Модуль для внесения админа через чат с ботом"""
 
 class FSM_admin(StatesGroup):
-    take_id = State()
+    institute = State()
+    course = State()
+    group = State()
     take_group = State()
+    take_id = State()
 
-cansel_keyboard = InlineKeyboardMarkup().add(InlineKeyboardButton("<<", callback_data="cancel_admin"))
+#cancel_keyboard = InlineKeyboardMarkup().add(InlineKeyboardButton("<<", callback_data="cancel_admin"))
 
 @dp.message_handler(regexp='Внести админа', state=None)
-async def add_admin(message: Message, state: FSMContext):
-    if message.from_user.id == main_admin:
-        async with state.proxy() as storage:
-            await message.answer("Введите id")
-        await FSM_admin.take_id.set()
+async def add_admin_query(message: Message, state: FSMContext):
+    """Выбор института"""
 
-@dp.message_handler(content_types=["text"], state=FSM_admin.take_id)
-async def take_id(message: Message, state: FSMContext):
+    if message.from_user.id == main_admin:
+        await message.answer("Выберите институт", reply_markup=await make_registration_keyboard_institutes())
+        await FSM_admin.institute.set()
+
+@dp.callback_query_handler(text = institutes, state=FSM_admin.institute)
+async def chosen_institute(call: CallbackQuery, state: FSMContext):
+    """Выбор курса"""
+
     async with state.proxy() as storage:
-        storage['id'] = message.text
-    await message.answer("Введите группу")
+        storage['admin_institute'] = call.data
+        await call.message.edit_text("Выберите курс", reply_markup=await make_registration_keyboard_courses(call.data))
+        await call.answer()
+
+    await FSM_admin.next()
+
+@dp.callback_query_handler(text = courses, state=FSM_admin.course)
+async def chosen_course(call: CallbackQuery, state: FSMContext):
+    """Выбор группы"""
+
+    async with state.proxy() as storage:
+        print("***", storage['admin_institute'])
+        await call.message.edit_text("Выберите группу", reply_markup= await make_registration_keyboard_groups(storage['admin_institute'], call.data))
+        await call.answer()
+
+    await FSM_admin.next()
+
+@dp.callback_query_handler(text = groups_array, state=FSM_admin.group)
+async def chosen_group(call: CallbackQuery, state: FSMContext):
+    """Ввод id пользователя"""
+
+    async with state.proxy() as storage:
+        storage['admin_group'] = call.data
+        await call.message.edit_text(f"Группа: {call.data}\n\nВведите id пользователя, которого хотите сделать админом", reply_markup=cancel_keyboard)
+        await call.answer()
     await FSM_admin.next()
 
 @dp.message_handler(content_types=["text"], state=FSM_admin.take_group)
-async def take_group(message: Message, state: FSMContext):
+async def take_id(message: Message, state: FSMContext):
+    """Добавления админа в базу данных и массив админов"""
+
     async with state.proxy() as storage:
-        await message.answer(f"{storage['id']}, {message.text}")
-        for group in groups_array:
-            if group == message.text:
-                global admins
-                user_id = int(storage['id'])
-                await DB.make_admin(user_id, group)
+        global admins
+        try:
+            user_id = int(message.text)
+        except:
+            await message.answer("То что вы ввели, не может быть id пользователя\n "
+                                 "внесение админа отменено")
+            await state.finish()
+            return
+        user_group = storage["admin_group"]
+        await DB.make_admin(user_id, user_group)
 
-                for i in range(len(admins)):
-                    if admins[i]['id'] == user_id:
-                        admins.pop(i)
-                        break
+        for i in range(len(admins)):
+            if admins[i]['id'] == user_id:
+                admins.pop(i)
+                break
 
-                admins += [{'id': user_id,
-                            'group': group}]
+        admins += [{'id': user_id,
+                    'group': user_group}]
 
-                await message.answer("Админ добавлен")
-                return
-    await message.answer("Вы неправильно указали группу")
-    await state.finish()
-
-@dp.callback_query_handler(text="cancel_admin", state="*")
-async def cancel_admin(call: CallbackQuery, state: FSMContext):
-    """Отмена добавления админа"""
-
-    await state.finish()
-    await call.message.edit_text("Добавление админа отменено")
-    await call.answer()
+        await message.answer("Админ добавлен")
+        await state.finish()

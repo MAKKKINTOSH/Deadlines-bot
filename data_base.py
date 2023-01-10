@@ -25,8 +25,8 @@ class DataBase:
     async def make_deadline(self, group, day, month, year, text):
         """Создает дедлайн"""
 
-        self.cursor.execute(f"INSERT INTO '{group}'"
-                            f"('date', 'deadline')"
+        self.cursor.execute(f"INSERT INTO `{group}`"
+                            f"(`date`, `deadline`)"
                             f"VALUES ({year}-{month}-{day}, {text})")
         return self.connect.commit()
 
@@ -43,7 +43,7 @@ class DataBase:
         """True если на эту дату есть дедлайн, иначе False"""
 
         self.cursor.execute(f"SELECT date "
-                            f"FROM '{group}' "
+                            f"FROM `{group}` "
                             f"WHERE date = ?",
                             (f"{year}-{month}-{day}",))
         for k in self.cursor:
@@ -53,10 +53,10 @@ class DataBase:
     async def make_user(self, id, group):
         """Добавляет пользователя в базу данных или изменяет его группу"""
 
-        self.cursor.execute(f"DELETE FROM 'users' WHERE id = {id}")
+        self.cursor.execute(f"DELETE FROM `users` WHERE id = {id}")
         self.cursor.execute("INSERT INTO users"
-                            "('id', 'user_group')"
-                            f"VALUES ({id}, {group})")
+                            "(`id`, `user_group`)"
+                            f"VALUES (%s, %s)", (id, group))
         return self.connect.commit()
 
 
@@ -64,10 +64,9 @@ class DataBase:
     async def make_admin(self, id, group):
         """Добавляет админа в базу данных или меняет его группу"""
 
-        self.cursor.execute(f"DELETE FROM 'admins' WHERE id = {id}")
-        self.cursor.execute("INSERT INTO admins"
-                            "('id', 'user_group')"
-                            f"VALUES ({id}, {group})")
+        self.cursor.execute(f"DELETE FROM `admins` WHERE `id` = {id}")
+        print(group)
+        self.cursor.execute(f"INSERT INTO `admins` (id, user_group) VALUES (%s, %s)", (id, group))
         return self.connect.commit()
 
     def take_dictionary(self, table_name):

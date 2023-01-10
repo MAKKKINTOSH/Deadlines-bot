@@ -2,7 +2,7 @@ from create_bot import dp
 from aiogram.types import Message
 from functions import is_user, is_admin, take_variable, change_variable
 from create_bot import DB
-from config import current_year, current_month, ru_month_array
+from date_variables import current_year, current_month, ru_month_array
 from keyboards import make_calendar_keyboard
 
 """Модуль для регистрации основных текстовых команд"""
