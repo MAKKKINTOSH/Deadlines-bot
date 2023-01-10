@@ -5,6 +5,7 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from functions import is_user, is_admin, take_variable
 from date_variables import callback_for_days, current_month, current_year, ru_month_array, month_array
 from keyboards import make_calendar_keyboard
+from datetime import datetime
 
 """Модуль включает в себя календарь, добавление, показ и удаление дедлайнов через него"""
 
@@ -35,6 +36,10 @@ async def change_month(month, operator):
 async def show_show_calendar(message: Message, state: FSMContext):
     """Выводит календарь для просмотра дедлайнов"""
 
+    global current_year, current_month
+    current_year = datetime.now().year
+    current_month = datetime.now().month
+
     user_id = message.from_user.id
     if await is_user(user_id):
         async with state.proxy() as storage:
@@ -61,6 +66,7 @@ async def show_deadline(call: CallbackQuery, state: FSMContext):
 
         await call.message.edit_text(await DB.show_deadline(set_group, set_day, set_month, set_year))
         await call.answer()
+        await state.finish()
 
 
 @dp.message_handler(regexp="Добавить", state=None)
@@ -107,6 +113,7 @@ async def make_deadline(message: Message, state: FSMContext):
                          storage['year'],
                          message.text)
         await message.answer("Дедлайн внесен")
+        await state.finish()
 
 
 @dp.message_handler(regexp="Удалить", state=None)
@@ -142,22 +149,21 @@ async def select_date_for_delete(call: CallbackQuery, state: FSMContext):
         await FSM_delete.next()
         await call.answer()
 
-    @dp.message_handler(content_types="text", state=FSM_delete.delete_deadline)
-    async def delete_deadline(message: Message, state: FSMContext):
-        """Удаляет дедлайн по введенному номеру"""
+@dp.message_handler(content_types="text", state=FSM_delete.delete_deadline)
+async def delete_deadline(message: Message, state: FSMContext):
+    """Удаляет дедлайн по введенному номеру"""
 
-        async with state.proxy() as storage:
-            try:
-                await DB.delete_deadline(await take_variable(message.from_user.id, 'group'),
-                                   storage['day'],
-                                   storage['month'],
-                                   storage['year'],
-                                   int(message.text))
-
-                await message.answer("✅Отлично, дедлайн успешно удален✅")
-
-            except:
-                await message.answer("🚫Ошибка, вы неправильно ввели номер🚫")
+    async with state.proxy() as storage:
+        try:
+            await DB.delete_deadline(await take_variable(message.from_user.id, 'group'),
+                               storage['day'],
+                               storage['month'],
+                               storage['year'],
+                               int(message.text))
+            await message.answer("✅Отлично, дедлайн успешно удален✅")
+        except:
+            await message.answer("🚫Ошибка, вы неправильно ввели номер🚫")
+    await state.finish()
 
 
 @dp.callback_query_handler(text=['previous_year', 'next_year', 'previous_month', 'next_month'], state="*")

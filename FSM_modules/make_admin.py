@@ -1,5 +1,5 @@
 from create_bot import dp, DB
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from keyboards import cancel_keyboard
@@ -22,7 +22,7 @@ class FSM_admin(StatesGroup):
 #cancel_keyboard = InlineKeyboardMarkup().add(InlineKeyboardButton("<<", callback_data="cancel_admin"))
 
 @dp.message_handler(regexp='Внести админа', state=None)
-async def add_admin_query(message: Message, state: FSMContext):
+async def add_admin_query(message: Message):
     """Выбор института"""
 
     if message.from_user.id == main_admin:
@@ -45,7 +45,7 @@ async def chosen_course(call: CallbackQuery, state: FSMContext):
     """Выбор группы"""
 
     async with state.proxy() as storage:
-        print("***", storage['admin_institute'])
+
         await call.message.edit_text("Выберите группу", reply_markup= await make_registration_keyboard_groups(storage['admin_institute'], call.data))
         await call.answer()
 
@@ -57,8 +57,10 @@ async def chosen_group(call: CallbackQuery, state: FSMContext):
 
     async with state.proxy() as storage:
         storage['admin_group'] = call.data
+        storage['message_edit_id'] = call.message.message_id
         await call.message.edit_text(f"Группа: {call.data}\n\nВведите id пользователя, которого хотите сделать админом", reply_markup=cancel_keyboard)
         await call.answer()
+
     await FSM_admin.next()
 
 @dp.message_handler(content_types=["text"], state=FSM_admin.take_group)
@@ -85,5 +87,7 @@ async def take_id(message: Message, state: FSMContext):
         admins += [{'id': user_id,
                     'group': user_group}]
 
-        await message.answer("Админ добавлен")
+        await message.answer(f"Админ добавлен\n"
+                             f"Группа: {storage['admin_group']}\n"
+                             f"id: {user_id}")
         await state.finish()

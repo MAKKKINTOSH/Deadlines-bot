@@ -14,8 +14,6 @@ async def command_start(message : types.Message):
     await message.answer("Привет, я - прототип дедлайн бота\n\n"
                          "Чтобы узнать команды, используйте /help\n\n")
 
-    print(users, admins)
-
     await message.answer("Для того, чтобы пользоваться ботом, выберите группу по команде /reg",
                          reply_markup=types.ReplyKeyboardMarkup(resize_keyboard=True).add(types.KeyboardButton("/reg")))
 
@@ -45,4 +43,3 @@ async def command_help(message : types.Message):
                          "2./menu - главное меню\n"
                          "3./help - помощь\n"
                          "4./contacts - контакты")
-    print(admins)

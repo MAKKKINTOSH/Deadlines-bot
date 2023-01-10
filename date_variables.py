@@ -1,11 +1,9 @@
 from datetime import datetime
-from create_bot import DB
 
 """В модуле содержатся переменные связанные с датой"""
 
 current_year = datetime.now().year
 current_month = datetime.now().month
-current_day = datetime.now().day
 
 days_array = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12',
               '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24',

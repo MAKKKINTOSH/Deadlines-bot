@@ -1,9 +1,9 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
 from date_variables import current_month, current_year, days_array, callback_for_days
-from institutes_and_groups import groups_array
 from functions import is_admin, take_variable
 from users import main_admin
+from create_bot import DB
 
 """Модуль для генерации клавиатур"""
 
@@ -54,28 +54,15 @@ async def make_calendar_keyboard(group, month=current_month, year=current_year):
 
     keyboard.add(b1, b2)
     keyboard.add(b3, b4)
+    text01 = "01" + 'ㅤ' if not await DB.record_exist(group, '01', month, year) else "01" + '☠'
+    keyboard.add(InlineKeyboardButton(text01, callback_data="d01"))
 
-    current = 0
-    DBR = []
+    for k in range(1, quantity_of_days):
+        text = days_array[k] + 'ㅤ' if not await DB.record_exist(group, days_array[k], month, year) else days_array[k] + '☠'
+        keyboard.insert(InlineKeyboardButton(text, callback_data=callback_for_days[k]))
 
-    for k in range(quantity_of_days // 6):
-        for k in range(6):
-            text = days_array[current]
-
-            DBR += [InlineKeyboardButton(text, callback_data=callback_for_days[current])]
-            current += 1
-        keyboard.add(DBR[0], DBR[1], DBR[2], DBR[3], DBR[4], DBR[5])
-        DBR = []
-
-    for k in range(quantity_of_days % 6):
-        text = days_array[current]
-
-        DBR += [InlineKeyboardButton(text, callback_data=callback_for_days[current])]
-        current += 1
-
-    if quantity_of_days % 6 == 1: keyboard.add(DBR[0])
-    if quantity_of_days % 6 == 4: keyboard.add(DBR[0], DBR[1], DBR[2], DBR[3])
-    if quantity_of_days % 6 == 5: keyboard.add(DBR[0], DBR[1], DBR[2], DBR[3], DBR[4])
+    for k in range(36 - quantity_of_days):
+        keyboard.insert(InlineKeyboardButton(" ", callback_data=" "))
 
     keyboard.add(cancel_button)
 
