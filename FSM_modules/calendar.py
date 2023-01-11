@@ -1,4 +1,6 @@
-from create_bot import dp, DB
+import functions
+from create_bot import dp
+from create_data_base import DB
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
@@ -6,6 +8,8 @@ from functions import is_user, is_admin, take_variable
 from date_variables import callback_for_days, current_month, current_year, ru_month_array, month_array
 from keyboards import make_calendar_keyboard
 from datetime import datetime
+
+from time import time
 
 """Модуль включает в себя календарь, добавление, показ и удаление дедлайнов через него"""
 
@@ -52,6 +56,7 @@ async def show_show_calendar(message: Message, state: FSMContext):
                                  reply_markup=await make_calendar_keyboard(await take_variable(user_id, 'group')))
             await FSM_show.show_show_calendar.set()
 
+from data_base import days_substraction #DELETE ON RELEASE
 
 @dp.callback_query_handler(text=callback_for_days, state=FSM_show.show_show_calendar)
 async def show_deadline(call: CallbackQuery, state: FSMContext):
@@ -67,6 +72,7 @@ async def show_deadline(call: CallbackQuery, state: FSMContext):
         await call.message.edit_text(await DB.show_deadline(set_group, set_day, set_month, set_year))
         await call.answer()
         await state.finish()
+
 
 
 @dp.message_handler(regexp="Добавить", state=None)
@@ -166,11 +172,12 @@ async def delete_deadline(message: Message, state: FSMContext):
     await state.finish()
 
 
-@dp.callback_query_handler(text=['previous_year', 'next_year', 'previous_month', 'next_month'], state="*")
+@dp.callback_query_handler(text=['previous_year', 'next_year', 'previous_month', 'next_month'], state=[FSM_show, FSM_add, FSM_delete])
 async def change_data(call: CallbackQuery, state: FSMContext):
     """Изменяет дату в календаре"""
 
     async with state.proxy() as storage:
+
         if call.data == 'previous_year':
             storage['year'] = storage['year'] - 1
 

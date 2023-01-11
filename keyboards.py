@@ -3,7 +3,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, \
 from date_variables import current_month, current_year, days_array, callback_for_days
 from functions import is_admin, take_variable
 from users import main_admin
-from create_bot import DB
+from create_data_base import DB
 
 """Модуль для генерации клавиатур"""
 
@@ -32,7 +32,6 @@ async def make_calendar_keyboard(group, month=current_month, year=current_year):
     """Клавиатура календарь"""
 
     keyboard = InlineKeyboardMarkup(row_width=6)
-    quantity_of_days = int
 
     if month in [1, 3, 5, 6, 8, 10, 12]:
         quantity_of_days = 31

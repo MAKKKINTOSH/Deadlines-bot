@@ -1,4 +1,33 @@
 import pymysql
+from users import users
+from institutes_and_groups import groups_array
+from datetime import datetime
+from create_bot import bot
+from time import time
+
+async def days_substraction(day, subtrahend, month, year):
+    """Функция возвращает значение day из которого вычли sybstahend
+    Учитывается то, что day это не число а день"""
+
+    day = int(day)
+
+    if day - subtrahend<=0:
+        month -= 1
+        if month in [1, 3, 5, 6, 8, 10, 12]:
+            return 31+day - subtrahend
+        elif month == 2 and year % 400 == 0:
+            return 29+day - subtrahend
+        elif month == 2 and year % 100 == 0:
+            return 28 + day - subtrahend
+        elif month == 2 and year % 4 == 0:
+            return 29+day - subtrahend
+        elif month == 2:
+            return 28+day - subtrahend
+        else:
+            return 30+day - subtrahend
+    else:
+        return day-subtrahend
+
 
 class DataBase:
     """Класс для работы с базой данных"""
@@ -83,6 +112,42 @@ class DataBase:
 
         return deadlines
 
+    async def deadlines_notification(self, *days_before_deadline):
+        """Уведомление пользователя о приближающихся дедлайнах"""
+
+        year = datetime.now().year
+        month = datetime.now().month
+
+        for n in days_before_deadline:
+
+            day = await days_substraction(datetime.now().day, n, month, year)
+            if day>datetime.now().day:
+                month-=1
+
+            for group in groups_array:
+                self.cursor.execute(f"SELECTE deadline "
+                                    f"FROM `{group}` "
+                                    f"WHERE date = %s",
+                                    (f"{year}-{month}-{day}"), )
+
+                deadlines = f"Группа: {group.replace('_', '-')}\n" \
+                            f"Пора бы уже что-то делать, ведь уже скоро тебя ждут следующие дедлайны:\n\n"
+
+                n = 1
+
+                for k in self.cursor:
+                    date = str(k[0])
+                    deadlines += f"{n}. {date[8:]}.{date[5:7]}.{date[:4]}\n" \
+                                 f"{k[1]}\n\n"
+                    n += 1
+
+                if n != 1:
+                    for k in users:
+                        if k['group'] == group:
+                            bot.send_message(k['id'], deadlines)
+
+
+
     async def record_exist(self, group, day, month, year):
         """True если на эту дату есть дедлайн, иначе False"""
 
@@ -102,8 +167,6 @@ class DataBase:
                             "(`id`, `user_group`)"
                             f"VALUES (%s, %s)", (id, group))
         return self.connect.commit()
-
-
 
     async def make_admin(self, id, group):
         """Добавляет админа в базу данных или меняет его группу"""

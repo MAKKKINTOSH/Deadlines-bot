@@ -1,7 +1,7 @@
 from create_bot import dp
 from aiogram.types import Message
 from functions import is_user, take_variable
-from create_bot import DB
+from create_data_base import DB
 
 
 """Модуль для регистрации основных текстовых команд"""

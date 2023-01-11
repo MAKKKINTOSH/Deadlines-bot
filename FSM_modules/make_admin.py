@@ -1,4 +1,5 @@
-from create_bot import dp, DB
+from create_bot import dp
+from create_data_base import DB
 from aiogram.types import Message, CallbackQuery
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup

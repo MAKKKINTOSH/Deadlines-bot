@@ -30,4 +30,3 @@ async def change_variable(id, variable, value):
     for k in users:
         if k['id'] == id:
             k[variable] = value
-

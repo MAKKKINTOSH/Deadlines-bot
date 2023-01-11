@@ -1,4 +1,5 @@
-from create_bot import dp, DB
+from create_bot import dp
+from create_data_base import DB
 from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove
 from institutes_and_groups import registration_dictionary, institutes, courses, groups_array
 from aiogram.dispatcher import FSMContext
