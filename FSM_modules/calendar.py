@@ -6,7 +6,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from functions import is_user, is_admin, take_variable
 from date_variables import callback_for_days, current_month, current_year, ru_month_array, month_array
-from keyboards import make_calendar_keyboard
+from keyboards import make_calendar_keyboard, cancel_keyboard
 from datetime import datetime
 
 from time import time
@@ -151,7 +151,7 @@ async def select_date_for_delete(call: CallbackQuery, state: FSMContext):
         set_year = storage['year']
 
         await call.message.edit_text(f"{await DB.show_deadline(set_group, set_day, set_month, set_year)}\n\n"
-                                     f"Введите номер дедлайна, который хотите удалить")
+                                     f"Введите номер дедлайна, который хотите удалить", reply_markup=cancel_keyboard)
         await FSM_delete.next()
         await call.answer()
 

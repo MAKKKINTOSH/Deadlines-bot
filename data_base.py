@@ -1,32 +1,36 @@
 import pymysql
-from users import users
-from institutes_and_groups import groups_array
 from datetime import datetime
-from create_bot import bot
-from time import time
+from date_variables import days_array
 
-async def days_substraction(day, subtrahend, month, year):
+async def days_substraction(day, added, month, year):
     """Функция возвращает значение day из которого вычли sybstahend
     Учитывается то, что day это не число а день"""
 
     day = int(day)
 
-    if day - subtrahend<=0:
-        month -= 1
-        if month in [1, 3, 5, 6, 8, 10, 12]:
-            return 31+day - subtrahend
-        elif month == 2 and year % 400 == 0:
-            return 29+day - subtrahend
-        elif month == 2 and year % 100 == 0:
-            return 28 + day - subtrahend
-        elif month == 2 and year % 4 == 0:
-            return 29+day - subtrahend
-        elif month == 2:
-            return 28+day - subtrahend
-        else:
-            return 30+day - subtrahend
-    else:
-        return day-subtrahend
+    if month in [1, 3, 5, 6, 8, 10, 12]:
+        if day + added > 31:
+            return day + added - 31
+        return day + added
+    elif month == 2 and year % 400 == 0:
+        if day + added > 29:
+            return day + added - 29
+        return day + added
+    elif month == 2 and year % 100 == 0:
+        if day + added > 28:
+            return day + added - 28
+        return day + added
+    elif month == 2 and year % 4 == 0:
+        if day + added > 29:
+            return day + added - 29
+        return day + added
+    elif month == 2:
+        if day + added > 28:
+            return day + added - 28
+        return day + added
+    if day + added > 30:
+        return day + added - 30
+    return day + added
 
 
 class DataBase:
@@ -112,39 +116,36 @@ class DataBase:
 
         return deadlines
 
-    async def deadlines_notification(self, *days_before_deadline):
+    async def deadlines_notification(self, group, days_before_deadline):
         """Уведомление пользователя о приближающихся дедлайнах"""
 
         year = datetime.now().year
         month = datetime.now().month
 
-        for n in days_before_deadline:
+        day = await days_substraction(datetime.now().day, days_before_deadline, month, year)
+        if day<datetime.now().day:
+            month+=1
+        day = days_array[day-1]
 
-            day = await days_substraction(datetime.now().day, n, month, year)
-            if day>datetime.now().day:
-                month-=1
+        self.cursor.execute(f"SELECT `date`, `deadline` "
+                            f"FROM `{group}` "
+                            f"WHERE date = %s",
+                            (f"{year}-{month}-{day}"), )
 
-            for group in groups_array:
-                self.cursor.execute(f"SELECTE deadline "
-                                    f"FROM `{group}` "
-                                    f"WHERE date = %s",
-                                    (f"{year}-{month}-{day}"), )
+        deadlines = f"Группа: {group.replace('_', '-')}\n" \
+                    f"Пора бы уже что-то делать, ведь уже скоро тебя ждут следующие дедлайны:\n\n"
 
-                deadlines = f"Группа: {group.replace('_', '-')}\n" \
-                            f"Пора бы уже что-то делать, ведь уже скоро тебя ждут следующие дедлайны:\n\n"
+        n = 1
 
-                n = 1
+        for k in self.cursor:
+            date = str(k[0])
+            deadlines += f"{n}. {date[8:]}.{date[5:7]}.{date[:4]}\n" \
+                         f"{k[1]}\n\n"
+            n += 1
 
-                for k in self.cursor:
-                    date = str(k[0])
-                    deadlines += f"{n}. {date[8:]}.{date[5:7]}.{date[:4]}\n" \
-                                 f"{k[1]}\n\n"
-                    n += 1
+        if n == 1: return False
 
-                if n != 1:
-                    for k in users:
-                        if k['group'] == group:
-                            bot.send_message(k['id'], deadlines)
+        return deadlines
 
 
 
