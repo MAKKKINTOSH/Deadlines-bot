@@ -1,5 +1,5 @@
 import functions
-from create_bot import dp
+from create_bot import dp, bot
 from create_data_base import DB
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.dispatcher import FSMContext
@@ -103,7 +103,7 @@ async def select_date_to_add(call: CallbackQuery, state: FSMContext):
         set_month = storage['month']
         set_year = storage['year']
 
-        await call.message.edit_text(f"Введите дедлайн на {set_day}.{set_month}.{set_year}")
+        await call.message.edit_text(f"Введите дедлайн на {set_day}.{set_month}.{set_year}", reply_markup=cancel_keyboard)
         await FSM_add.next()
         await call.answer()
 
@@ -113,11 +113,15 @@ async def make_deadline(message: Message, state: FSMContext):
     """Добавляет дедлайн"""
 
     async with state.proxy() as storage:
-        await DB.make_deadline(await take_variable(message.chat.id, "group"),
+        await DB.make_deadline(await take_variable(message.from_user.id, "group"),
                          storage['day'],
                          storage['month'],
                          storage['year'],
                          message.text)
+
+        await bot.edit_message_text(f"Введите дедлайн на {storage['day']}.{storage['month']}.{storage['year']}",
+                                    message.from_user.id,
+                                    message.message_id - 1)
         await message.answer("Дедлайн внесен")
         await state.finish()
 
@@ -159,6 +163,9 @@ async def select_date_for_delete(call: CallbackQuery, state: FSMContext):
 async def delete_deadline(message: Message, state: FSMContext):
     """Удаляет дедлайн по введенному номеру"""
 
+    await bot.edit_message_text("Введите номер дедлайна, который хотите удалить",
+                                message.from_user.id,
+                                message.message_id - 1)
     async with state.proxy() as storage:
         try:
             await DB.delete_deadline(await take_variable(message.from_user.id, 'group'),

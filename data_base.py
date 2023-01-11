@@ -160,20 +160,20 @@ class DataBase:
             return True
         return False
 
-    async def make_user(self, id, group):
+    async def make_user(self, user_id, group):
         """Добавляет пользователя в базу данных или изменяет его группу"""
 
-        self.cursor.execute(f"DELETE FROM `users` WHERE id = {id}")
+        self.cursor.execute(f"DELETE FROM `users` WHERE user_id = {user_id}")
         self.cursor.execute("INSERT INTO users"
-                            "(`id`, `user_group`)"
-                            f"VALUES (%s, %s)", (id, group))
+                            "(`user_id`, `user_group`)"
+                            f"VALUES (%s, %s)", (user_id, group))
         return self.connect.commit()
 
-    async def make_admin(self, id, group):
+    async def make_admin(self, user_id, group):
         """Добавляет админа в базу данных или меняет его группу"""
 
-        self.cursor.execute(f"DELETE FROM `admins` WHERE `id` = {id}")
-        self.cursor.execute(f"INSERT INTO `admins` (id, user_group) VALUES (%s, %s)", (id, group))
+        self.cursor.execute(f"DELETE FROM `admins` WHERE `user_id` = {user_id}")
+        self.cursor.execute(f"INSERT INTO `admins` (user_id, user_group) VALUES (%s, %s)", (user_id, group))
         return self.connect.commit()
 
     def take_dictionary(self, table_name):
@@ -183,10 +183,10 @@ class DataBase:
         dictionary_array = []
         if table_name == 'users':
             for k in self.cursor:
-                dictionary_array += [{'id': k[0],
-                                      'group': k[1]}]
+                dictionary_array += [{'user_id': int(k[1]),
+                                      'group': k[2]}]
         if table_name == 'admins':
             for k in self.cursor:
-                dictionary_array += [{'id': k[0],
-                                      'group': k[1]}]
+                dictionary_array += [{'user_id': int(k[1]),
+                                      'group': k[2]}]
         return dictionary_array

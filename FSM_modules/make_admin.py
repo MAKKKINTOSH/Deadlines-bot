@@ -54,12 +54,12 @@ async def chosen_course(call: CallbackQuery, state: FSMContext):
 
 @dp.callback_query_handler(text = groups_array, state=FSM_admin.group)
 async def chosen_group(call: CallbackQuery, state: FSMContext):
-    """Ввод id пользователя"""
+    """Ввод user_id пользователя"""
 
     async with state.proxy() as storage:
         storage['admin_group'] = call.data
         storage['message_edit_id'] = call.message.message_id
-        await call.message.edit_text(f"Группа: {call.data}\n\nВведите id пользователя, которого хотите сделать админом", reply_markup=cancel_keyboard)
+        await call.message.edit_text(f"Группа: {call.data}\n\nВведите user_id пользователя, которого хотите сделать админом", reply_markup=cancel_keyboard)
         await call.answer()
 
     await FSM_admin.next()
@@ -73,7 +73,7 @@ async def take_id(message: Message, state: FSMContext):
         try:
             user_id = int(message.text)
         except:
-            await message.answer("То что вы ввели, не может быть id пользователя\n "
+            await message.answer("То что вы ввели, не может быть user_id пользователя\n "
                                  "внесение админа отменено")
             await state.finish()
             return
@@ -81,14 +81,14 @@ async def take_id(message: Message, state: FSMContext):
         await DB.make_admin(user_id, user_group)
 
         for i in range(len(admins)):
-            if admins[i]['id'] == user_id:
+            if admins[i]['user_id'] == user_id:
                 admins.pop(i)
                 break
 
-        admins += [{'id': user_id,
+        admins += [{'user_id': user_id,
                     'group': user_group}]
 
         await message.answer(f"Админ добавлен\n"
                              f"Группа: {storage['admin_group']}\n"
-                             f"id: {user_id}")
+                             f"user_id: {user_id}")
         await state.finish()

@@ -11,18 +11,18 @@ cancel_button = InlineKeyboardButton("<<", callback_data="cancel")
 cancel_keyboard = InlineKeyboardMarkup().add(cancel_button)
 #Кнопка и клавиатура отмены
 
-async def make_menu_keyboard(id):
+async def make_menu_keyboard(user_id):
     """Клавиатура главного меню"""
 
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
     b1 = KeyboardButton("Ближайшие 5 дедлайнов")
     b2 = KeyboardButton("Календарь")
     keyboard.add(b1, b2)
-    if await is_admin(id, await take_variable(id, "group")):
+    if await is_admin(user_id, await take_variable(user_id, "group")):
         b3 = KeyboardButton("Добавить")
         b4 = KeyboardButton("Удалить")
         keyboard.add(b3, b4)
-    if id == main_admin:
+    if user_id == main_admin:
         keyboard.add(KeyboardButton("Внести админа"))
 
     return keyboard

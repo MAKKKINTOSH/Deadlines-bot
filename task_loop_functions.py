@@ -22,7 +22,7 @@ async def deadlines_notification(wait_for):
                     if text:
                         for user in users:
                             if user['group'] == group:
-                                await bot.send_message(user['id'], text)
+                                await bot.send_message(user['user_id'], text)
 
         await sleep(wait_for)
 

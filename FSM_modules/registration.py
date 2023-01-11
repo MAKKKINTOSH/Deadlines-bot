@@ -6,7 +6,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import  State, StatesGroup
 from datetime import datetime
 from keyboards import cancel_button
-from users import users
+from users import users, admins
 
 """Модуль для регистрации пользователя"""
 
@@ -74,11 +74,11 @@ async def chosen_group(call: CallbackQuery, state: FSMContext):
         await DB.make_user(user_id, call.data)
 
         for k in range(len(users)):
-            if users[k]['id'] == user_id:
+            if users[k]['user_id'] == user_id:
                 users.pop(k)
                 break
 
-        users += [{'id': user_id,
+        users += [{'user_id': user_id,
                    'group': call.data}]
         
         await call.message.edit_text("Вы зарегистрировались")
