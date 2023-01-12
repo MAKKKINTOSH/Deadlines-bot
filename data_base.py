@@ -102,8 +102,12 @@ class DataBase:
         deadlines = f"Группа: {group.replace('_', '-')}\nБлижайшие {n} дедлайнов:\n\n"
         n = 1
 
+        current_date = int(str(datetime.now().date()).replace("-", ""))
+
         for k in self.cursor:
             date = str(k[0])
+            if int(date.replace("-", ""))<current_date:
+                continue
             deadlines += f"{n}. {date[8:]}.{date[5:7]}.{date[:4]}\n" \
                          f"{k[1]}\n\n"
             n += 1
