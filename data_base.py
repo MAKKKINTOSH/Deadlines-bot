@@ -1,6 +1,6 @@
 import pymysql
 from datetime import datetime
-from date_variables import days_array
+from data.date_variables import days_array
 
 async def days_substraction(day, added, month, year):
     """Функция возвращает значение day из которого вычли substrahend
@@ -51,6 +51,8 @@ class DataBase:
             print(e)
         else:
             print("db is connected")
+
+
 
         self.cursor = self.connect.cursor()
 

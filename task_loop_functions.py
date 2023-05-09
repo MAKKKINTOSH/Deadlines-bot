@@ -1,9 +1,8 @@
 from create_data_base import DB
-from institutes_and_groups import groups_array
+from data.institutes_and_groups import groups_array
 from create_bot import bot
-from users import users
+from data.users import users
 from datetime import datetime
-from date_variables import current_year, current_month
 from asyncio import sleep
 
 """Модуль содержит в себе, функции, выполняющиеся в цикле событий"""

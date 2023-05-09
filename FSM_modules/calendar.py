@@ -1,16 +1,13 @@
-import functions
 from create_bot import dp, bot
 from create_data_base import DB
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from functions import is_user, is_admin, take_variable
-from date_variables import callback_for_days, ru_month_array, month_array
+from data.date_variables import callback_for_days, ru_month_array
 from keyboards import make_calendar_keyboard, cancel_keyboard
 from datetime import datetime
 global current_year, current_month
-
-from time import time
 
 """Модуль включает в себя календарь, добавление, показ и удаление дедлайнов через него"""
 
@@ -56,7 +53,6 @@ async def show_show_calendar(message: Message, state: FSMContext):
                                  reply_markup=await make_calendar_keyboard(await take_variable(user_id, 'group')))
             await FSM_show.show_show_calendar.set()
 
-from data_base import days_substraction #DELETE ON RELEASE
 
 @dp.callback_query_handler(text=callback_for_days, state=FSM_show.show_show_calendar)
 async def show_deadline(call: CallbackQuery, state: FSMContext):

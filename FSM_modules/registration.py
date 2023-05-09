@@ -1,12 +1,12 @@
 from create_bot import dp
 from create_data_base import DB
 from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
-from institutes_and_groups import registration_dictionary, institutes, courses, groups_array
+from data.institutes_and_groups import registration_dictionary, institutes, courses, groups_array, institutes_callback
+from data.users import users
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import  State, StatesGroup
 from datetime import datetime
 from keyboards import cancel_button, make_menu_keyboard
-from users import users, admins
 
 """Модуль для регистрации пользователя"""
 
@@ -18,7 +18,7 @@ class FSM_registration(StatesGroup):
 async def make_registration_keyboard_institutes():
     kb = InlineKeyboardMarkup()
     for k in registration_dictionary:
-        kb.add(InlineKeyboardButton(k, callback_data=k))
+        kb.add(InlineKeyboardButton(k, callback_data=institutes_callback[k]))
     kb.add(cancel_button)
     return kb
 
@@ -44,14 +44,14 @@ async def command_registration(message: Message):
     await message.answer("Выберите институт", reply_markup=await make_registration_keyboard_institutes())
     print(message.from_user.id, datetime.now().hour, datetime.now().minute)
 
-@dp.callback_query_handler(text = institutes, state=FSM_registration.institute)
+@dp.callback_query_handler(text = list(institutes_callback.values()), state=FSM_registration.institute)
 async def chosen_institute(call: CallbackQuery, state: FSMContext):
     """Выбор курса"""
 
     async with state.proxy() as storage:
-        storage['institute'] = call.data
+        storage['institute'] = institutes[call.data]
     await FSM_registration.next()
-    await call.message.edit_text("Выберите курс", reply_markup= await make_registration_keyboard_courses(call.data))
+    await call.message.edit_text("Выберите курс", reply_markup= await make_registration_keyboard_courses(institutes[call.data]))
     await call.answer()
 
 @dp.callback_query_handler(text = courses, state=FSM_registration.course)

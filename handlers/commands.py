@@ -1,9 +1,7 @@
 from create_bot import dp
-from institutes_and_groups import groups_array
 from aiogram import types
 from keyboards import make_menu_keyboard
 from functions import is_user
-from users import users, admins
 
 """В модуле происходит обработка команд, введенных пользователем бота"""
 

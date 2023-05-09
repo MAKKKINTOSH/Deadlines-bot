@@ -1,4 +1,4 @@
-from users import users, admins
+from data.users import users, admins
 from create_bot import bot
 """Модуль, содержащий вспомогательные функции"""
 

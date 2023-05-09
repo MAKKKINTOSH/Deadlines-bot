@@ -6,7 +6,7 @@ from create_data_base import DB
 
 """Модуль для регистрации основных текстовых команд"""
 
-@dp.message_handler(regexp='Ближайшие 5 дедлайнов')
+@dp.message_handler(regexp='Ближайшие 5 дедлайнов', state='*')
 async def next_five(message: Message):
     """Показывает ближайшие 5 дедлайнов"""
 

@@ -4,8 +4,8 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from keyboards import cancel_keyboard
-from users import main_admin, admins
-from institutes_and_groups import institutes, courses, groups_array
+from data.users import main_admin, admins
+from data.institutes_and_groups import institutes, institutes_callback, courses, groups_array
 from FSM_modules.registration import \
     make_registration_keyboard_groups, \
     make_registration_keyboard_courses, \
@@ -30,13 +30,13 @@ async def add_admin_query(message: Message):
         await message.answer("Выберите институт", reply_markup=await make_registration_keyboard_institutes())
         await FSM_admin.institute.set()
 
-@dp.callback_query_handler(text = institutes, state=FSM_admin.institute)
+@dp.callback_query_handler(text = list(institutes_callback.values()), state=FSM_admin.institute)
 async def chosen_institute(call: CallbackQuery, state: FSMContext):
     """Выбор курса"""
 
     async with state.proxy() as storage:
-        storage['admin_institute'] = call.data
-        await call.message.edit_text("Выберите курс", reply_markup=await make_registration_keyboard_courses(call.data))
+        storage['admin_institute'] = institutes[call.data]
+        await call.message.edit_text("Выберите курс", reply_markup=await make_registration_keyboard_courses(institutes[call.data]))
         await call.answer()
 
     await FSM_admin.next()
