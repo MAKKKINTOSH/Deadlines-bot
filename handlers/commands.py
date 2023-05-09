@@ -1,3 +1,4 @@
+import data.users
 from create_bot import dp
 from aiogram import types
 from keyboards import make_menu_keyboard
@@ -35,6 +36,11 @@ async def command_contacts(message : types.Message):
 @dp.message_handler(commands=['help'])
 async def command_help(message : types.Message):
     """Команда для помощи пользователю"""
+
+    if message.from_user.id == data.users.main_admin:
+        await message.answer("Команда для удаления старых групп:"
+                             "DELETE OLD GRPS")
+        return
 
     await message.answer("Привет, я - прототип дедлайн бота\n\n"
                          "1./reg - выбор вашей группы)\n"

@@ -7,7 +7,7 @@ from create_bot import dp
 from handlers import commands
 from FSM_modules import registration
 from FSM_modules import calendar
-from handlers import next_five_deadlines
+from handlers import text_commands
 from FSM_modules import make_admin
 from FSM_modules import fsm_other
 
@@ -18,6 +18,8 @@ if __name__ == "__main__":
     from data import institutes_and_groups
 
     from create_data_base import DB
+
+    DB.create_group_tables()
 
     print("Congrats, bot is actually working!!!")
 

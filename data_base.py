@@ -1,6 +1,7 @@
 import pymysql
 from datetime import datetime
 from data.date_variables import days_array
+from data.institutes_and_groups import groups_array
 
 async def days_substraction(day, added, month, year):
     """Функция возвращает значение day из которого вычли substrahend
@@ -51,10 +52,36 @@ class DataBase:
             print(e)
         else:
             print("db is connected")
-
-
-
         self.cursor = self.connect.cursor()
+
+    def create_group_tables(self):
+        """Инициализирует базу и создает таблицы для групп"""
+
+        for group in groups_array:
+            self.cursor.execute(f"CREATE TABLE IF NOT EXISTS `deadlines_data_base`.`{group}` "
+                                f"(`deadline_id` INT NOT NULL AUTO_INCREMENT ,"
+                                f" `date` DATE NOT NULL , "
+                                f" `deadline` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL , "
+                                f" PRIMARY KEY (`deadline_id`))"
+                                f" ENGINE = InnoDB;")
+
+        return self.connect.commit()
+
+    async def delete_unusable_tables(self):
+        """Удаляет неиспользуемые таблицы групп, которых в универе больше нет
+            Возвращает массив с названием удаленных групп"""
+
+        deleted = []
+
+        self.cursor.execute(f"SHOW TABLES")
+        print(len(self.cursor.fetchall()[2:]))
+        for k in self.cursor.fetchall()[2:]:
+            if k[0] not in groups_array:
+                deleted+=[k[0]]
+                self.cursor.execute(f"DROP TABLE {k[0]}")
+
+        self.connect.commit()
+        return deleted
 
     async def make_deadline(self, group, day, month, year, text):
         """Создает дедлайн"""
