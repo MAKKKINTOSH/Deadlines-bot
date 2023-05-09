@@ -21,3 +21,5 @@ ______________________________________________________________________
 - [Python 3.9.2](https://www.python.org/downloads/release/python-392/ "Python 3.9.2")
 - [aiogram 2.24](https://pypi.org/project/aiogram/ "aiogram 2.24")
 - [PyMySQL 1.0.2](https://pypi.org/project/PyMySQL/ "PyMySQL 1.0.2")
+- [beautifulsoup4 4.12.2](https://pypi.org/project/beautifulsoup4/ "beautifulsoup4 4.12.2")
+- [lxml 4.9.2](https://pypi.org/project/lxml/ "lxml 4.9.2")
