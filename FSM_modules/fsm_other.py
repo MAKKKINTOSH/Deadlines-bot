@@ -11,8 +11,7 @@ async def FSM_already_use(message: Message):
 
     if message.text in ["Календарь", "Удалить", "Добавить", "Внести админа", "/reg"]:
         await message.answer("Похоже, у вас не закрыто окно регистрации или календарь, "
-                         "бот, к сожалению, не совершенен, "
-                         "так что чтобы продолжить, закройте эти окна")
+                             "чтобы продолжить, закройте эти окна")
 
 @dp.callback_query_handler(text="cancel", state="*")
 async def cancel(call: CallbackQuery, state: FSMContext):

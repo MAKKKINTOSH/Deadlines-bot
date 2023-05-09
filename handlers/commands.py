@@ -11,7 +11,7 @@ from users import users, admins
 async def command_start(message : types.Message):
     """Команда для начала использования бота"""
 
-    await message.answer("Привет, я - прототип дедлайн бота\n\n"
+    await message.answer("Привет, я - бот для дедлайнов\n\n"
                          "Чтобы узнать команды, используйте /help\n\n")
 
     await message.answer("Для того, чтобы пользоваться ботом, выберите группу по команде /reg",

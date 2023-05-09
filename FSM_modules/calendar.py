@@ -5,9 +5,10 @@ from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKe
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from functions import is_user, is_admin, take_variable
-from date_variables import callback_for_days, current_month, current_year, ru_month_array, month_array
+from date_variables import callback_for_days, ru_month_array, month_array
 from keyboards import make_calendar_keyboard, cancel_keyboard
 from datetime import datetime
+global current_year, current_month
 
 from time import time
 
@@ -40,7 +41,6 @@ async def change_month(month, operator):
 async def show_show_calendar(message: Message, state: FSMContext):
     """Выводит календарь для просмотра дедлайнов"""
 
-    global current_year, current_month
     current_year = datetime.now().year
     current_month = datetime.now().month
 
@@ -78,6 +78,9 @@ async def show_deadline(call: CallbackQuery, state: FSMContext):
 @dp.message_handler(regexp="Добавить", state=None)
 async def show_add_calendar(message: Message, state: FSMContext):
     """Выводит календарь для добавления дедлайнов"""
+
+    current_year = datetime.now().year
+    current_month = datetime.now().month
 
     user_id = message.from_user.id
     if await is_user(user_id):
@@ -129,6 +132,9 @@ async def make_deadline(message: Message, state: FSMContext):
 @dp.message_handler(regexp="Удалить", state=None)
 async def show_delete_calendar(message: Message, state: FSMContext):
     """Выводит календарь для удаления дедлайнов"""
+
+    current_year = datetime.now().year
+    current_month = datetime.now().month
 
     user_id = message.from_user.id
     if await is_user(user_id):

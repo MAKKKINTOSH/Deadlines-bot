@@ -3,8 +3,8 @@ from datetime import datetime
 from date_variables import days_array
 
 async def days_substraction(day, added, month, year):
-    """Функция возвращает значение day из которого вычли sybstahend
-    Учитывается то, что day это не число а день"""
+    """Функция возвращает значение day из которого вычли substrahend
+    Учитывается то, что day это не натуральное число а день"""
 
     day = int(day)
 

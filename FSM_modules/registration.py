@@ -1,11 +1,11 @@
 from create_bot import dp
 from create_data_base import DB
-from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove
+from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 from institutes_and_groups import registration_dictionary, institutes, courses, groups_array
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import  State, StatesGroup
 from datetime import datetime
-from keyboards import cancel_button
+from keyboards import cancel_button, make_menu_keyboard
 from users import users, admins
 
 """Модуль для регистрации пользователя"""
@@ -82,7 +82,7 @@ async def chosen_group(call: CallbackQuery, state: FSMContext):
                    'group': call.data}]
         
         await call.message.edit_text("Вы зарегистрировались")
-        await call.message.answer(f"Ваша группа: {call.data.replace('_', '-')}", reply_markup=ReplyKeyboardRemove())
+        await call.message.answer(f"Ваша группа: {call.data.replace('_', '-')}", reply_markup=await make_menu_keyboard(call.from_user.id))
 
     await state.finish()
 
