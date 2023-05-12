@@ -58,7 +58,7 @@ class DataBase:
         """Инициализирует базу и создает таблицы для групп"""
 
         for group in groups_array:
-            self.cursor.execute(f"CREATE TABLE IF NOT EXISTS `deadlines_data_base`.`{group}` "
+            self.cursor.execute(f"CREATE TABLE IF NOT EXISTS `default_db`.`{group}` "
                                 f"(`deadline_id` INT NOT NULL AUTO_INCREMENT ,"
                                 f" `date` DATE NOT NULL , "
                                 f" `deadline` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL , "

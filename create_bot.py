@@ -1,5 +1,5 @@
 from aiogram import Bot, Dispatcher
-from TOKEN import Token
+from config import Token
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 """Модуль инициализирует бота"""
