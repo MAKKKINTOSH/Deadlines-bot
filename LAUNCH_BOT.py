@@ -9,7 +9,7 @@ from create_bot import dp, bot
 """Главный модуль"""
 
 async def on_startup(dp):
-    await bot.set_webhook(config.url)
+    await bot.set_webhook(config.webhook_uri, certificate=open("cert.pem", 'rb'))
 
 async def on_shutdown(dp):
     await bot.delete_webhook()
@@ -31,11 +31,12 @@ if __name__ == "__main__":
 
     DB.create_group_tables()
 
-    print("Congrats, bot is actually working!!!")
+    print("data base is init!")
 
     loop = get_event_loop()
     loop.create_task(deadlines_notification(60*60*3))
     loop.create_task(change_current_date(60*60*6))
+
     executor.start_webhook(
         dispatcher=dp,
         webhook_path='',
@@ -43,4 +44,6 @@ if __name__ == "__main__":
         on_shutdown=on_shutdown,
         skip_updates=True,
         host="0.0.0.0",
-        port=8843)
+        port=443)
+
+    print("Congrats, bot is actually working!!!")
