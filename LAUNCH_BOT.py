@@ -39,11 +39,10 @@ if __name__ == "__main__":
 
     executor.start_webhook(
         dispatcher=dp,
-        webhook_path='',
+        webhook_path=config.webhook_path,
         on_startup=on_startup,
         on_shutdown=on_shutdown,
         skip_updates=True,
-        host="0.0.0.0",
         port=443)
 
     print("Congrats, bot is actually working!!!")
