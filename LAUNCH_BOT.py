@@ -47,6 +47,6 @@ if __name__ == "__main__":
         on_shutdown=on_shutdown,
         skip_updates=True,
         host=config.webapp_host,
-        port=config.webhook_port)
+        port=config.webapp_port)
 
     print("Congrats, bot is actually working!!!")
