@@ -10,7 +10,7 @@ from create_bot import dp, bot
 
 
 async def on_startup(dp):
-    await bot.set_webhook(config.webhook_host, certificate=open("cert.pem", 'rb'))
+    await bot.set_webhook(config.webhook_url, certificate=open("cert.pem", 'rb'))
 
 
 #
