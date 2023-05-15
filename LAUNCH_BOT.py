@@ -10,10 +10,10 @@ from create_bot import dp, bot
 
 
 async def on_startup(dp):
-    await bot.set_webhook(config.webhook_url)
+    await bot.set_webhook(config.webhook_url, certificate=open("cert.pem", 'rb'))
 
 
-# certificate=open("cert.pem", 'rb')
+#
 async def on_shutdown(dp):
     await bot.delete_webhook()
 
@@ -42,11 +42,10 @@ if __name__ == "__main__":
 
     executor.start_webhook(
         dispatcher=dp,
-        webhook_path=config.webhook_path,
+        webhook_path=config.webhook_url,
         on_startup=on_startup,
         on_shutdown=on_shutdown,
-        skip_updates=True,
-        host=config.webapp_host,
-        port=config.webapp_port)
+        skip_updates=True
+    )
 
     print("Congrats, bot is actually working!!!")
