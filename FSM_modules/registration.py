@@ -86,3 +86,4 @@ async def chosen_group(call: CallbackQuery, state: FSMContext):
 
     await state.finish()
 
+print("registration is import")

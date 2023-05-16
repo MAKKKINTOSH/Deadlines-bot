@@ -92,3 +92,5 @@ async def take_id(message: Message, state: FSMContext):
                              f"Группа: {storage['admin_group']}\n"
                              f"user_id: {user_id}")
         await state.finish()
+
+print("make admin is import")

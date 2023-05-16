@@ -26,7 +26,7 @@ async def delete_old_groups(message: Message):
 
     return
 
-
+print("text commands is import")
 
 
 

@@ -18,3 +18,5 @@ async def cancel(call: CallbackQuery, state: FSMContext):
     await call.message.edit_text("Действие отменено")
     await call.answer()
     await state.finish()
+
+print("fsm other is import")
