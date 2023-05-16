@@ -46,8 +46,8 @@ if __name__ == "__main__":
         on_startup=on_startup,
         on_shutdown=on_shutdown,
         skip_updates=True,
-        host=config.webhook_host,
-        path=config.webhook_path
+        host=config.webapp_host,
+        port=config.webapp_port
     )
 
     print("Congrats, bot is actually working!!!")
